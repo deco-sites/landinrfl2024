@@ -11,25 +11,52 @@ interface Props {
    * @description The user full name label text.
    */
   userFullNameLabel?: string;
+  /**
+   * @description The form prompt text.
+   */
+  formPromptText?: string;
+  /**
+   * @description The email label text.
+   */
+  emailLabel?: string;
+  /**
+   * @description The password label text.
+   */
+  passwordLabel?: string;
+  /**
+   * @description The login button text.
+   */
+  loginButtonText?: string;
+  /**
+   * @description The source URL for the login image.
+   */
+  imageSrc?: string;
+  /**
+   * @description The alt text for the login image.
+   */
+  imageAlt?: string;
 }
 
-export default function LoginForm({ 
+export default function LoginForm({
+  successText = "Login realizado com sucesso!",
+  userIdLabel = "ID do Usuário",
+  userFullNameLabel = "Nome Completo",
   formPromptText = "Conecte-se com seu email e senha e tenha acesso a todos os benefícios que podemos oferecer!",
   emailLabel = "Email",
   passwordLabel = "Senha",
   loginButtonText = "Entrar",
   imageSrc = "https://example.com/login-image.jpg",
-  imageAlt = "Login Image",
-  successText = "Login realizado com sucesso!",
-  userIdLabel = "ID do Usuário",
-  userFullNameLabel = "Nome Completo"
+  imageAlt = "Login Image"
 }: Props) {
-  const handleSubmit = async (event: Event) => {
+  console.log('Antes do HandleSubmit');
+  async function handleSubmit(event: Event) {
     event.preventDefault();
-    const form = event.target as HTMLFormElement;
+    console.log('handleSubmit');
+    console.log('event: ', event);
+    const form = event.currentTarget;
     const email = form.email.value;
     const password = form.password.value;
-    
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "text/xml");
     myHeaders.append("SOAPAction", "login");
@@ -66,23 +93,31 @@ export default function LoginForm({
         const xmlDoc = parser.parseFromString(data, "text/xml");
         const userId = xmlDoc.getElementsByTagName("userId")[0].childNodes[0].nodeValue;
         const userFullName = xmlDoc.getElementsByTagName("userFullName")[0].childNodes[0].nodeValue;
-        
+
         return (
-          <div class="flex flex-col items-center justify-center mx-auto max-w-4xl">
+          <div class="flex flex-col items-center justify-center">
             <p class="text-2xl text-center mb-6">{successText}</p>
             <p class="text-xl mb-2">{userIdLabel}: {userId}</p>
             <p class="text-xl">{userFullNameLabel}: {userFullName}</p>
           </div>
         );
       } else {
-        alert('Login falhou. Verifique seu email e senha.');
+        return (
+          <p class="text-2xl text-center text-red-500 mt-6">
+            Login falhou. Verifique seu email e senha.
+          </p>
+        );
       }
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      alert('Ocorreu um erro ao fazer login. Tente novamente mais tarde.');
+      return (
+        <p class="text-2xl text-center text-red-500 mt-6">
+          Login falhou. Verifique seu email e senha.
+        </p>
+      );
     }
   };
-
+  console.log('Depois do HandleSubmit');
   return (
     <div class="flex flex-col md:flex-row items-center justify-center mx-auto max-w-4xl">
       <div class="w-full md:w-1/2">
