@@ -49,7 +49,7 @@ export default function LoginForm({
   imageAlt = "Login Image"
 }: Props) {
   console.log('Antes do HandleSubmit');
-  async function handleSubmit(event: Event) {
+  const handleSubmit = async (event) {
     event.preventDefault();
     console.log('handleSubmit');
     console.log('event: ', event);
